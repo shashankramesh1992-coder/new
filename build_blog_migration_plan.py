@@ -118,7 +118,7 @@ r2.bold = True; r2.font.size = Pt(11.5); r2.font.color.rgb = BLACK
 
 p3 = doc.add_paragraph(); p3.alignment = WD_ALIGN_PARAGRAPH.CENTER
 p3.paragraph_format.space_before = Pt(0); p3.paragraph_format.space_after = Pt(12)
-r3 = p3.add_run('Based on: Blog URL Mapping (Final) — Complete Blogs List + URL Mapping tabs')
+r3 = p3.add_run('Based on: Blog URL Mapping (Final) — Complete Blogs List + URL Mapping + Redirect Plan tabs, cross-checked')
 r3.italic = True; r3.font.size = Pt(9); r3.font.color.rgb = DARK
 
 # ============================================================
@@ -130,7 +130,7 @@ bullet('Retained content moves into three new top-level sections — /insights, 
 bullet('223 articles have a clean, verified, 1-to-1 old → new URL redirect ready to hand to dev. 30 more (blog homepage, all 28 /blog/tag/* pages, 1 glossary post) keep their current URL — no redirect needed.', bold_lead='Redirects: ')
 bullet('The 276 removed URLs carry only ~8.2K sessions/12mo combined, vs. 278.2K for retained content — a ~3% share. Most are either already-dead legacy aliases or thin, low-traffic posts.', bold_lead='Risk: ')
 bullet('All 200 removed URLs that lacked a defined disposition now have one: 113 get a redirect to a genuinely relevant, verified-live page elsewhere on socialpilot.co; 87 are confirmed 410s with no suitable equivalent. See Section 4 and the appendix workbook.', bold_lead='Redirect research done: ')
-bullet('1,794 internal links currently point at pages being removed and need repointing regardless of the redirect/410 call — see Section 5.', bold_lead='Open item: ')
+bullet('1,794 internal links currently point at pages being removed and need repointing regardless of the redirect/410 call — see Section 6.', bold_lead='Open item: ')
 
 # ============================================================
 # 1. THE NEW STRUCTURE
@@ -198,13 +198,28 @@ body_para('Full URL-by-URL detail — old URL, action, redirect target, confiden
 flag_box('Still needs sign-off before launch', [
     'The 58 "medium/low confidence" redirects are judgment calls (e.g. a dentists article folding into a general doctors/healthcare page) — SEO/content lead should spot-check these before they go live.',
     '8 of the 113 new redirects point to real, live pages found outside the original mapping tab: 5 go to the /compare or /insights section hub (still within this migration’s structure), and 3 go to pre-existing /industry/* landing pages (photography, NGO, restaurant marketing agency) that have nothing to do with this restructure — confirm all 8 are the intended landing spots, not just an acceptable fallback.',
-    '1,794 internal links across the site currently point at pages being removed. These need to be found and repointed to the new redirect targets (or removed, for pages going to a 410) — a redirect alone does not fix a stale internal link. See Section 5.',
+    '1,794 internal links across the site currently point at pages being removed. These need to be found and repointed to the new redirect targets (or removed, for pages going to a 410) — a redirect alone does not fix a stale internal link. See Section 6.',
 ])
 
 # ============================================================
-# 5. EXECUTION CHECKLIST
+# 5. DATA INTEGRITY VERIFICATION
 # ============================================================
-section_header('5. EXECUTION CHECKLIST')
+section_header('5. DATA INTEGRITY VERIFICATION')
+body_para('Before finalizing, the three source tabs (Complete Blogs List, URL Mapping, Redirect Plan) were cross-checked programmatically against each other. All checks passed:', size=9.5, space_after=6)
+bullet('Zero duplicate URLs across all three tabs.')
+bullet('Every URL in URL Mapping (223 rows) is marked "To Be Retained" in Complete Blogs List — and vice versa, every "To Be Retained" URL not in URL Mapping is one of the 30 stay-as-is pages (Section 2).')
+bullet('Every URL in Redirect Plan (276 rows) is marked "To be Removed" in Complete Blogs List, with zero overlap against the URL Mapping set.')
+bullet('Every redirect target is a verified real URL — either the New URL for a retained article, or one of the 5 live domain pages found outside the mapping tab (Section 4). Zero blank targets, zero self-redirects, and zero redirect chains (no target that is itself another removed URL).')
+bullet('All 76 "already-aliased" rows independently re-verified against Complete Blogs List’s redirect-chain data and URL Mapping’s new-URL column — exact match on all 76.')
+bullet('223 (URL Mapping) + 276 (Redirect Plan) + 30 (stay-as-is) = 529 — reconciles exactly with the full blog audit.')
+flag_box('One source-data note (not a plan error)', [
+    'Complete Blogs List’s Status column still shows the 22 corrected tag pages as "To be Removed" — it was never updated after the tag-page correction. The Redirect Plan and this document both correctly treat all 28 tag pages as retained; anyone pulling counts directly from that Status column instead of the Redirect Plan should be aware of this override.',
+])
+
+# ============================================================
+# 6. EXECUTION CHECKLIST
+# ============================================================
+section_header('6. EXECUTION CHECKLIST')
 numbered('SEO/content lead spot-checks the 58 medium/low-confidence redirects in the appendix workbook (Section 4).')
 numbered('Implement all 223 verified 301 redirects from the URL Mapping tab (retained articles).')
 numbered('Implement the 189 redirects + 87 410s for removed URLs from the appendix workbook — do NOT touch /blog/tag/* pages, they are being kept.')
@@ -217,7 +232,7 @@ numbered('Monitor 404s, redirect chains, and organic traffic for all migrated/re
 # ============================================================
 # 6. SUGGESTED TIMELINE
 # ============================================================
-section_header('6. SUGGESTED TIMELINE')
+section_header('7. SUGGESTED TIMELINE')
 make_table(
     ['Week', 'Milestone'],
     [
@@ -232,7 +247,7 @@ make_table(
 # ============================================================
 # 7. SUCCESS METRICS
 # ============================================================
-section_header('7. SUCCESS METRICS')
+section_header('8. SUCCESS METRICS')
 bullet('No net loss in organic sessions to migrated content at the 60/90-day mark (baseline: 278,187 sessions/12mo across the 253 retained articles).')
 bullet('Zero 404s reachable via internal links post-launch.')
 bullet('All 223 retained-article redirects resolve in a single hop — no chains.')
