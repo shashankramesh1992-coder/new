@@ -129,7 +129,8 @@ bullet('529 legacy /blog URLs were audited. 231 articles are being retained, 298
 bullet('Retained content moves into three new top-level sections — /insights, /strategy, /compare — plus a smaller /blog for the handful of posts that don’t fit those buckets.', bold_lead='New IA: ')
 bullet('223 articles have a clean, verified, 1-to-1 old → new URL redirect ready to hand to dev. 8 more (blog homepage, top tag pages, 1 glossary post) keep their current URL — no redirect needed.', bold_lead='Redirects: ')
 bullet('The 298 removed URLs represent only ~2.6% of retained traffic volume (7.2K vs. 277.8K sessions/12mo). Most are either already-dead legacy aliases or thin, low-traffic posts.', bold_lead='Risk: ')
-bullet('180 live articles being removed have no redirect target or 410 specified in the source sheet, and 1,778 internal links currently point at pages being removed. Both need a decision before launch — see Section 4.', bold_lead='Open item: ')
+bullet('All 222 removed URLs that lacked a defined disposition now have one: 131 get a redirect to a genuinely relevant, verified-live page elsewhere on socialpilot.co; 91 are confirmed 410s with no suitable equivalent. See Section 4 and the appendix workbook.', bold_lead='Redirect research done: ')
+bullet('1,778 internal links currently point at pages being removed and need repointing regardless of the redirect/410 call — see Section 5.', bold_lead='Open item: ')
 
 # ============================================================
 # 1. THE NEW STRUCTURE
@@ -169,7 +170,7 @@ make_table(
         ('Already-redirected aliases → a retained article', '76', 'Old URL already 301s into a page we’re keeping', 'Re-point redirect to that article’s new URL'),
         ('Already-redirected aliases → another removed page', '25', 'Old URL already 301s into a page also being cut', 'Retire together, no separate traffic impact'),
         ('Dead-end aliases (target not in this audit)', '17', 'Old redirect chain, unclear/off-site target', 'Spot-check, then 410'),
-        ('Live, standalone thin/low-traffic pages + pruned tag pages', '180', 'Avg. 40 sessions/yr, max 163; includes ~22 low-value tag pages', 'See Section 4 — disposition not yet decided'),
+        ('Live, standalone thin/low-traffic pages + pruned tag pages', '180', 'Avg. 40 sessions/yr, max 163; includes ~22 low-value tag pages', 'Resolved — redirect or 410 assigned, see Section 4'),
     ],
     [Inches(2.0), Inches(0.6), Inches(2.1), Inches(2.22)],
     row_size=8,
@@ -177,31 +178,40 @@ make_table(
 body_para('Combined traffic exposure across all 298 removed URLs: 7,244 sessions/12mo, vs. 277,759 for retained content — a ~2.6% share. This is a low-risk cut.', size=9.5, space_before=8, bold=True)
 
 # ============================================================
-# 4. OPEN DECISIONS / RISK FLAGS
+# 4. WHERE REMOVED ARTICLES GO (RESEARCH COMPLETE)
 # ============================================================
-section_header('4. OPEN DECISIONS — RESOLVE BEFORE LAUNCH')
-flag_box('Flag 1 — 180 live articles have no defined disposition', [
-    'The source sheet explicitly flags only 6 URLs for a 410. The remaining ~174 live, low-traffic articles being removed aren’t assigned a 410 or a redirect target.',
-    'Recommendation: default these to a 410 (Gone). They’re thin and low-traffic; forcing a 301 to a loosely-related retained article would just dilute that page’s relevance signal.',
-    'Needs a quick sign-off from SEO/content lead before the redirect map is finalized.',
-])
-flag_box('Flag 2 — 1,778 internal links point at pages being removed', [
-    'These links live on OTHER pages across the site (not just the removed pages themselves) and need to be found and repointed — a 410 alone will not fix a live internal link pointing at a dead page.',
-    'Action: run an internal-link audit against the 298 removed URLs and update/remove those links as part of the same release.',
+section_header('4. WHERE DO REMOVED ARTICLES GO? (RESEARCH COMPLETE)')
+body_para('The source sheet only specified a 410 for 6 URLs, leaving 222 removed URLs (the 180 live articles above, plus 42 legacy aliases whose old redirect target is also being cut) with no defined disposition. Each of the 222 was checked against the 223 retained articles’ new URLs AND the live socialpilot.co domain — /features, /industry, /tools, /compare — for a genuinely relevant, real, verified-live destination before deciding.', size=9.5, space_after=6)
+make_table(
+    ['Outcome', 'Count', 'Sessions (12mo)', 'What it means'],
+    [
+        ('Redirect — high confidence', '61', '—', 'Clear topical match to a retained page (e.g. how-to-sell-on-pinterest → how-to-make-money-on-pinterest)'),
+        ('Redirect — medium/low confidence', '70', '—', 'Reasonable but broader match (e.g. a niche how-to folding into a general topic hub)'),
+        ('410 Gone', '91', '2,697', 'No equivalent content exists anywhere on the domain — safe to retire outright'),
+        ('Total resolved', '222', '5,141 (redirects)', ''),
+    ],
+    [Inches(2.0), Inches(0.7), Inches(1.15), Inches(2.07)],
+    row_size=8,
+)
+body_para('Full URL-by-URL detail — old URL, action, redirect target, confidence, and rationale — is in the companion workbook: BLOG_MIGRATION_removed_url_redirect_map__appendix.xlsx', size=9.5, space_before=8, bold=True)
+flag_box('Still needs sign-off before launch', [
+    'The 70 "medium/low confidence" redirects are judgment calls (e.g. a dentists article folding into a general doctors/healthcare page) — SEO/content lead should spot-check these before they go live.',
+    '8 of the 131 redirects point outside the original mapping tab — to /compare, /insights, or /industry/* pages found by auditing the live site. Confirm these hub pages are the intended landing spots, not just an acceptable fallback.',
+    '1,778 internal links across the site currently point at pages being removed. These need to be found and repointed to the new redirect targets (or removed, for pages going to a 410) — a redirect alone does not fix a stale internal link. See Section 5.',
 ])
 
 # ============================================================
 # 5. EXECUTION CHECKLIST
 # ============================================================
 section_header('5. EXECUTION CHECKLIST')
-numbered('Sign off on disposition (410 vs. redirect) for the 180 live removed articles.')
-numbered('Implement all 223 verified 301 redirects from the URL Mapping tab.')
-numbered('Implement 410s for confirmed dead articles and pruned tag pages.')
+numbered('SEO/content lead spot-checks the 70 medium/low-confidence redirects in the appendix workbook (Section 4).')
+numbered('Implement all 223 verified 301 redirects from the URL Mapping tab (retained articles).')
+numbered('Implement the 131 redirects + 91 410s for removed URLs from the appendix workbook.')
 numbered('Audit and repoint the 1,778 internal links currently pointing at removed URLs.')
 numbered('Update the XML sitemap: add new /insights, /strategy, /compare URLs; remove pruned URLs.')
 numbered('Update main nav, footer, and related-posts modules to reflect the 3 new sections.')
 numbered('Submit the updated sitemap in Google Search Console and spot-check a sample of redirects live.')
-numbered('Monitor 404s, redirect chains, and organic traffic for the 223 migrated URLs at 7 / 30 / 60 / 90 days post-launch.')
+numbered('Monitor 404s, redirect chains, and organic traffic for all migrated/redirected URLs at 7 / 30 / 60 / 90 days post-launch.')
 
 # ============================================================
 # 6. SUGGESTED TIMELINE
@@ -210,7 +220,7 @@ section_header('6. SUGGESTED TIMELINE')
 make_table(
     ['Week', 'Milestone'],
     [
-        ('Week 1', 'Resolve open decisions (Section 4); QA final redirect map with SEO'),
+        ('Week 1', 'SEO sign-off on the removed-URL redirect map (Section 4); QA full redirect set'),
         ('Week 2', 'Implement redirects + 410s in staging; repoint internal links'),
         ('Week 3', 'Launch; submit sitemap to Google Search Console'),
         ('Weeks 4–12', 'Monitor rankings/traffic; fix any redirect chains or stray 404s'),
@@ -224,7 +234,7 @@ make_table(
 section_header('7. SUCCESS METRICS')
 bullet('No net loss in organic sessions to migrated content at the 60/90-day mark (baseline: 277,759 sessions/12mo across the 223 retained articles).')
 bullet('Zero 404s reachable via internal links post-launch.')
-bullet('All 223 redirects resolve in a single hop — no chains.')
+bullet('All 223 retained-article redirects resolve in a single hop — no chains.')
 bullet('Search Console shows the new /insights, /strategy, /compare URLs indexed within 30 days.')
 
 # --- SAVE ---
