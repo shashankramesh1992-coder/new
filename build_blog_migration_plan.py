@@ -40,12 +40,12 @@ def add_run(para, text, bold=False, size=10, color=BLACK, italic=False):
     run.font.size = Pt(size); run.font.color.rgb = color
     return run
 
-def body_para(text='', bold=False, size=10, color=BLACK, space_before=4, space_after=4, indent_pt=0):
+def body_para(text='', bold=False, size=10, color=BLACK, space_before=4, space_after=4, indent_pt=0, italic=False):
     p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.LEFT
     p.paragraph_format.space_before = Pt(space_before); p.paragraph_format.space_after = Pt(space_after)
     if indent_pt: p.paragraph_format.left_indent = Pt(indent_pt)
     if text:
-        run = p.add_run(text); run.bold = bold; run.font.size = Pt(size); run.font.color.rgb = color
+        run = p.add_run(text); run.bold = bold; run.italic = italic; run.font.size = Pt(size); run.font.color.rgb = color
     return p
 
 def section_header(text):
@@ -128,9 +128,9 @@ section_header('TL;DR')
 bullet('529 legacy /blog URLs were audited. 231 articles are being retained, 298 are being removed / pruned.', bold_lead='Full audit: ')
 bullet('Retained content moves into three new top-level sections — /insights, /strategy, /compare — plus a smaller /blog for the handful of posts that don’t fit those buckets.', bold_lead='New IA: ')
 bullet('223 articles have a clean, verified, 1-to-1 old → new URL redirect ready to hand to dev. 8 more (blog homepage, top tag pages, 1 glossary post) keep their current URL — no redirect needed.', bold_lead='Redirects: ')
-bullet('The 298 removed URLs represent only ~2.6% of retained traffic volume (7.2K vs. 277.8K sessions/12mo). Most are either already-dead legacy aliases or thin, low-traffic posts.', bold_lead='Risk: ')
+bullet('The 298 removed URLs carry only ~8.7K sessions/12mo combined, vs. 277.8K for retained content — a ~3% share. Most are either already-dead legacy aliases or thin, low-traffic posts.', bold_lead='Risk: ')
 bullet('All 222 removed URLs that lacked a defined disposition now have one: 131 get a redirect to a genuinely relevant, verified-live page elsewhere on socialpilot.co; 91 are confirmed 410s with no suitable equivalent. See Section 4 and the appendix workbook.', bold_lead='Redirect research done: ')
-bullet('1,778 internal links currently point at pages being removed and need repointing regardless of the redirect/410 call — see Section 5.', bold_lead='Open item: ')
+bullet('1,814 internal links currently point at pages being removed and need repointing regardless of the redirect/410 call — see Section 5.', bold_lead='Open item: ')
 
 # ============================================================
 # 1. THE NEW STRUCTURE
@@ -150,6 +150,7 @@ make_table(
     bold_last_row=True,
 )
 body_para('Insights = trend/news commentary ("what’s happening"). Strategy = how-to / execution content (including a 13-post Brand & Audience Strategy sub-cluster). Compare = the 5 competitor-pricing pages. /blog retains generic commentary that doesn’t fit the other three.', size=8.5, space_before=6)
+body_para('Note: these are the only 4 destinations in this migration — there is no new "/industry" section. Section 4 sends a small number of REMOVED articles (3 of 298) to /industry/* pages that already exist on the site today, unrelated to this restructure, because they happen to be the closest live equivalent for that specific vertical topic.', size=8.5, italic=True, space_before=2)
 
 # ============================================================
 # 2. WHAT'S MOVING
@@ -175,7 +176,7 @@ make_table(
     [Inches(2.0), Inches(0.6), Inches(2.1), Inches(2.22)],
     row_size=8,
 )
-body_para('Combined traffic exposure across all 298 removed URLs: 7,244 sessions/12mo, vs. 277,759 for retained content — a ~2.6% share. This is a low-risk cut.', size=9.5, space_before=8, bold=True)
+body_para('Combined traffic exposure across all 298 removed URLs: 8,675 sessions/12mo (7,244 from the 180 live pages + 1,431 from the 118 already-redirected aliases), vs. 277,759 for retained content — a ~3% share. This is a low-risk cut.', size=9.5, space_before=8, bold=True)
 
 # ============================================================
 # 4. WHERE REMOVED ARTICLES GO (RESEARCH COMPLETE)
@@ -196,8 +197,8 @@ make_table(
 body_para('Full URL-by-URL detail — old URL, action, redirect target, confidence, and rationale — is in the companion workbook: BLOG_MIGRATION_removed_url_redirect_map__appendix.xlsx', size=9.5, space_before=8, bold=True)
 flag_box('Still needs sign-off before launch', [
     'The 70 "medium/low confidence" redirects are judgment calls (e.g. a dentists article folding into a general doctors/healthcare page) — SEO/content lead should spot-check these before they go live.',
-    '8 of the 131 redirects point outside the original mapping tab — to /compare, /insights, or /industry/* pages found by auditing the live site. Confirm these hub pages are the intended landing spots, not just an acceptable fallback.',
-    '1,778 internal links across the site currently point at pages being removed. These need to be found and repointed to the new redirect targets (or removed, for pages going to a 410) — a redirect alone does not fix a stale internal link. See Section 5.',
+    '8 of the 131 redirects point to real, live pages found outside the original mapping tab: 5 go to the /compare or /insights section hub (still within this migration’s structure), and 3 go to pre-existing /industry/* landing pages (photography, NGO, restaurant marketing agency) that have nothing to do with this restructure — confirm all 8 are the intended landing spots, not just an acceptable fallback.',
+    '1,814 internal links across the site currently point at pages being removed. These need to be found and repointed to the new redirect targets (or removed, for pages going to a 410) — a redirect alone does not fix a stale internal link. See Section 5.',
 ])
 
 # ============================================================
@@ -207,7 +208,7 @@ section_header('5. EXECUTION CHECKLIST')
 numbered('SEO/content lead spot-checks the 70 medium/low-confidence redirects in the appendix workbook (Section 4).')
 numbered('Implement all 223 verified 301 redirects from the URL Mapping tab (retained articles).')
 numbered('Implement the 131 redirects + 91 410s for removed URLs from the appendix workbook.')
-numbered('Audit and repoint the 1,778 internal links currently pointing at removed URLs.')
+numbered('Audit and repoint the 1,814 internal links currently pointing at removed URLs.')
 numbered('Update the XML sitemap: add new /insights, /strategy, /compare URLs; remove pruned URLs.')
 numbered('Update main nav, footer, and related-posts modules to reflect the 3 new sections.')
 numbered('Submit the updated sitemap in Google Search Console and spot-check a sample of redirects live.')
