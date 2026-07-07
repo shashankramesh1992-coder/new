@@ -1,0 +1,233 @@
+from docx import Document
+from docx.shared import Pt, RGBColor, Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+
+doc = Document()
+
+for section in doc.sections:
+    section.top_margin    = Inches(0.75)
+    section.bottom_margin = Inches(0.75)
+    section.left_margin   = Inches(0.8)
+    section.right_margin  = Inches(0.8)
+
+BLACK   = RGBColor(0x14, 0x14, 0x13)
+DARK    = RGBColor(0x3D, 0x3D, 0x3A)
+BLUE    = RGBColor(0x1A, 0x56, 0xDB)
+RED     = RGBColor(0xB4, 0x23, 0x18)
+HEAD_BG = "1A56DB"
+HEAD_FG = RGBColor(0xFF, 0xFF, 0xFF)
+ALT_BG  = "FAFAFA"
+FLAG_BG = "FDECEC"
+
+def set_cell_bg(cell, hex_color):
+    tc = cell._tc; tcPr = tc.get_or_add_tcPr()
+    for s in tcPr.findall(qn('w:shd')): tcPr.remove(s)
+    shd = OxmlElement('w:shd')
+    shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), hex_color)
+    tcPr.append(shd)
+
+def cell_para(cell, text, bold=False, size=9, color=BLACK, italic=False, align=WD_ALIGN_PARAGRAPH.LEFT):
+    p = cell.paragraphs[0]; p.clear(); p.alignment = align
+    p.paragraph_format.space_before = Pt(2); p.paragraph_format.space_after = Pt(2)
+    run = p.add_run(text); run.bold = bold; run.italic = italic
+    run.font.size = Pt(size); run.font.color.rgb = color
+    return p
+
+def add_run(para, text, bold=False, size=10, color=BLACK, italic=False):
+    run = para.add_run(text); run.bold = bold; run.italic = italic
+    run.font.size = Pt(size); run.font.color.rgb = color
+    return run
+
+def body_para(text='', bold=False, size=10, color=BLACK, space_before=4, space_after=4, indent_pt=0):
+    p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    p.paragraph_format.space_before = Pt(space_before); p.paragraph_format.space_after = Pt(space_after)
+    if indent_pt: p.paragraph_format.left_indent = Pt(indent_pt)
+    if text:
+        run = p.add_run(text); run.bold = bold; run.font.size = Pt(size); run.font.color.rgb = color
+    return p
+
+def section_header(text):
+    tbl = doc.add_table(rows=1, cols=1); tbl.style = 'Table Grid'
+    cell = tbl.rows[0].cells[0]; set_cell_bg(cell, HEAD_BG)
+    p = cell.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    p.paragraph_format.space_before = Pt(4); p.paragraph_format.space_after = Pt(4)
+    run = p.add_run(text); run.bold = True; run.font.size = Pt(11); run.font.color.rgb = HEAD_FG
+    body_para(space_before=2, space_after=2)
+
+def sub_header(text):
+    p = body_para(space_before=8, space_after=3)
+    run = p.add_run(text); run.bold = True; run.font.size = Pt(10); run.font.color.rgb = BLUE
+    return p
+
+def bullet(text, size=9.5, bold_lead=None):
+    p = doc.add_paragraph(style='List Bullet')
+    p.paragraph_format.space_before = Pt(1); p.paragraph_format.space_after = Pt(1)
+    if bold_lead:
+        add_run(p, bold_lead, bold=True, size=size)
+        add_run(p, text, size=size)
+    else:
+        run = p.add_run(text); run.font.size = Pt(size); run.font.color.rgb = BLACK
+    return p
+
+def numbered(text, size=9.5):
+    p = doc.add_paragraph(style='List Number')
+    p.paragraph_format.space_before = Pt(2); p.paragraph_format.space_after = Pt(2)
+    run = p.add_run(text); run.font.size = Pt(size); run.font.color.rgb = BLACK
+    return p
+
+def make_table(headers, rows, col_widths, header_size=9, row_size=8.5, bold_last_row=False):
+    tbl = doc.add_table(rows=1+len(rows), cols=len(headers)); tbl.style = 'Table Grid'
+    hrow = tbl.rows[0]
+    for i, (h, w) in enumerate(zip(headers, col_widths)):
+        c = hrow.cells[i]; c.width = w
+        set_cell_bg(c, HEAD_BG); cell_para(c, h, bold=True, size=header_size, color=HEAD_FG)
+    for ri, rd in enumerate(rows):
+        row = tbl.rows[ri+1]
+        is_last = bold_last_row and ri == len(rows) - 1
+        bg = 'FFFFFF' if ri % 2 == 0 else ALT_BG
+        if is_last: bg = 'E5E9F5'
+        for ci, (val, w) in enumerate(zip(rd, col_widths)):
+            c = row.cells[ci]; c.width = w
+            set_cell_bg(c, bg); cell_para(c, val, size=row_size, bold=is_last)
+    return tbl
+
+def flag_box(title, lines):
+    tbl = doc.add_table(rows=1, cols=1); tbl.style = 'Table Grid'
+    cell = tbl.rows[0].cells[0]; set_cell_bg(cell, FLAG_BG)
+    p = cell.paragraphs[0]; p.paragraph_format.space_before = Pt(4); p.paragraph_format.space_after = Pt(2)
+    run = p.add_run(title); run.bold = True; run.font.size = Pt(10); run.font.color.rgb = RED
+    for line in lines:
+        p2 = cell.add_paragraph(); p2.paragraph_format.space_before = Pt(1); p2.paragraph_format.space_after = Pt(3)
+        r2 = p2.add_run('•  ' + line); r2.font.size = Pt(9.5); r2.font.color.rgb = BLACK
+    body_para(space_before=2, space_after=2)
+
+# ============================================================
+# TITLE
+# ============================================================
+p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p.paragraph_format.space_before = Pt(0); p.paragraph_format.space_after = Pt(3)
+r = p.add_run('BLOG MIGRATION PLAN')
+r.bold = True; r.font.size = Pt(16); r.font.color.rgb = BLUE
+
+p2 = doc.add_paragraph(); p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p2.paragraph_format.space_before = Pt(0); p2.paragraph_format.space_after = Pt(10)
+r2 = p2.add_run('SocialPilot Blog Restructure — /blog → /insights, /strategy, /compare')
+r2.bold = True; r2.font.size = Pt(11.5); r2.font.color.rgb = BLACK
+
+p3 = doc.add_paragraph(); p3.alignment = WD_ALIGN_PARAGRAPH.CENTER
+p3.paragraph_format.space_before = Pt(0); p3.paragraph_format.space_after = Pt(12)
+r3 = p3.add_run('Based on: Blog URL Mapping (Final) — Complete Blogs List + URL Mapping tabs')
+r3.italic = True; r3.font.size = Pt(9); r3.font.color.rgb = DARK
+
+# ============================================================
+# TL;DR
+# ============================================================
+section_header('TL;DR')
+bullet('529 legacy /blog URLs were audited. 231 articles are being retained, 298 are being removed / pruned.', bold_lead='Full audit: ')
+bullet('Retained content moves into three new top-level sections — /insights, /strategy, /compare — plus a smaller /blog for the handful of posts that don’t fit those buckets.', bold_lead='New IA: ')
+bullet('223 articles have a clean, verified, 1-to-1 old → new URL redirect ready to hand to dev. 8 more (blog homepage, top tag pages, 1 glossary post) keep their current URL — no redirect needed.', bold_lead='Redirects: ')
+bullet('The 298 removed URLs represent only ~2.6% of retained traffic volume (7.2K vs. 277.8K sessions/12mo). Most are either already-dead legacy aliases or thin, low-traffic posts.', bold_lead='Risk: ')
+bullet('180 live articles being removed have no redirect target or 410 specified in the source sheet, and 1,778 internal links currently point at pages being removed. Both need a decision before launch — see Section 4.', bold_lead='Open item: ')
+
+# ============================================================
+# 1. THE NEW STRUCTURE
+# ============================================================
+section_header('1. THE NEW STRUCTURE')
+body_para('Everything being retained lands in one of four buckets:', size=9.5, space_after=6)
+make_table(
+    ['New Section', 'Path', 'Articles', 'Sessions (12mo)'],
+    [
+        ('Insights', '/insights/*', '61', '124,865'),
+        ('Strategy', '/strategy/*', '121', '130,887'),
+        ('Compare', '/compare/*', '5', '1,401'),
+        ('Stays in /blog', '/blog/*', '36', '20,606'),
+        ('Total retained', '—', '223', '277,759'),
+    ],
+    [Inches(1.7), Inches(1.4), Inches(1.1), Inches(1.72)],
+    bold_last_row=True,
+)
+body_para('Insights = trend/news commentary ("what’s happening"). Strategy = how-to / execution content (including a 13-post Brand & Audience Strategy sub-cluster). Compare = the 5 competitor-pricing pages. /blog retains generic commentary that doesn’t fit the other three.', size=8.5, space_before=6)
+
+# ============================================================
+# 2. WHAT'S MOVING
+# ============================================================
+section_header('2. WHAT’S MOVING (REDIRECTS)')
+bullet('The URL Mapping tab has a full, verified old → new mapping for all 223 articles: no duplicate destinations, no duplicate sources, one hop each.', bold_lead='Ready to implement: ')
+bullet('8 retained URLs need no redirect — the /blog homepage, 5 top-level tag pages (instagram, tiktok, twitter, how-tos, social-media-marketing, social-media-engagement), and 1 glossary post stay exactly where they are.', bold_lead='No change needed: ')
+bullet('Hand the URL Mapping tab directly to dev/SEO as the 301 redirect map — Current URL → New URL, one row per rule.', bold_lead='Action: ')
+
+# ============================================================
+# 3. WHAT'S BEING REMOVED
+# ============================================================
+section_header('3. WHAT’S BEING REMOVED')
+body_para('298 legacy URLs are being retired. Breaking that down by what they actually are today:', size=9.5, space_after=6)
+make_table(
+    ['Group', 'Count', 'What it is', 'Action needed'],
+    [
+        ('Already-redirected aliases → a retained article', '76', 'Old URL already 301s into a page we’re keeping', 'Re-point redirect to that article’s new URL'),
+        ('Already-redirected aliases → another removed page', '25', 'Old URL already 301s into a page also being cut', 'Retire together, no separate traffic impact'),
+        ('Dead-end aliases (target not in this audit)', '17', 'Old redirect chain, unclear/off-site target', 'Spot-check, then 410'),
+        ('Live, standalone thin/low-traffic pages + pruned tag pages', '180', 'Avg. 40 sessions/yr, max 163; includes ~22 low-value tag pages', 'See Section 4 — disposition not yet decided'),
+    ],
+    [Inches(2.0), Inches(0.6), Inches(2.1), Inches(2.22)],
+    row_size=8,
+)
+body_para('Combined traffic exposure across all 298 removed URLs: 7,244 sessions/12mo, vs. 277,759 for retained content — a ~2.6% share. This is a low-risk cut.', size=9.5, space_before=8, bold=True)
+
+# ============================================================
+# 4. OPEN DECISIONS / RISK FLAGS
+# ============================================================
+section_header('4. OPEN DECISIONS — RESOLVE BEFORE LAUNCH')
+flag_box('Flag 1 — 180 live articles have no defined disposition', [
+    'The source sheet explicitly flags only 6 URLs for a 410. The remaining ~174 live, low-traffic articles being removed aren’t assigned a 410 or a redirect target.',
+    'Recommendation: default these to a 410 (Gone). They’re thin and low-traffic; forcing a 301 to a loosely-related retained article would just dilute that page’s relevance signal.',
+    'Needs a quick sign-off from SEO/content lead before the redirect map is finalized.',
+])
+flag_box('Flag 2 — 1,778 internal links point at pages being removed', [
+    'These links live on OTHER pages across the site (not just the removed pages themselves) and need to be found and repointed — a 410 alone will not fix a live internal link pointing at a dead page.',
+    'Action: run an internal-link audit against the 298 removed URLs and update/remove those links as part of the same release.',
+])
+
+# ============================================================
+# 5. EXECUTION CHECKLIST
+# ============================================================
+section_header('5. EXECUTION CHECKLIST')
+numbered('Sign off on disposition (410 vs. redirect) for the 180 live removed articles.')
+numbered('Implement all 223 verified 301 redirects from the URL Mapping tab.')
+numbered('Implement 410s for confirmed dead articles and pruned tag pages.')
+numbered('Audit and repoint the 1,778 internal links currently pointing at removed URLs.')
+numbered('Update the XML sitemap: add new /insights, /strategy, /compare URLs; remove pruned URLs.')
+numbered('Update main nav, footer, and related-posts modules to reflect the 3 new sections.')
+numbered('Submit the updated sitemap in Google Search Console and spot-check a sample of redirects live.')
+numbered('Monitor 404s, redirect chains, and organic traffic for the 223 migrated URLs at 7 / 30 / 60 / 90 days post-launch.')
+
+# ============================================================
+# 6. SUGGESTED TIMELINE
+# ============================================================
+section_header('6. SUGGESTED TIMELINE')
+make_table(
+    ['Week', 'Milestone'],
+    [
+        ('Week 1', 'Resolve open decisions (Section 4); QA final redirect map with SEO'),
+        ('Week 2', 'Implement redirects + 410s in staging; repoint internal links'),
+        ('Week 3', 'Launch; submit sitemap to Google Search Console'),
+        ('Weeks 4–12', 'Monitor rankings/traffic; fix any redirect chains or stray 404s'),
+    ],
+    [Inches(1.1), Inches(4.92)],
+)
+
+# ============================================================
+# 7. SUCCESS METRICS
+# ============================================================
+section_header('7. SUCCESS METRICS')
+bullet('No net loss in organic sessions to migrated content at the 60/90-day mark (baseline: 277,759 sessions/12mo across the 223 retained articles).')
+bullet('Zero 404s reachable via internal links post-launch.')
+bullet('All 223 redirects resolve in a single hop — no chains.')
+bullet('Search Console shows the new /insights, /strategy, /compare URLs indexed within 30 days.')
+
+# --- SAVE ---
+out = '/home/user/new/BLOG_MIGRATION_PLAN__SocialPilot_v1.docx'
+doc.save(out)
+print(f'SAVED: {out}')
