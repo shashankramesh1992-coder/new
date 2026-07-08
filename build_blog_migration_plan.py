@@ -125,12 +125,13 @@ r3.italic = True; r3.font.size = Pt(9); r3.font.color.rgb = DARK
 # TL;DR
 # ============================================================
 section_header('TL;DR')
-bullet('529 legacy /blog URLs were audited. 253 articles are being retained (including all /blog/tag/* pages — none are being removed), 276 are being removed / pruned.', bold_lead='Full audit: ')
+bullet('529 legacy /blog URLs were audited. 283 articles are being retained (including all /blog/tag/* pages and 30 articles reclassified per the new /insights-vs-/strategy split below), 246 are being removed / pruned.', bold_lead='Full audit: ')
 bullet('Retained content moves into three new top-level sections — /insights, /strategy, /compare — plus a smaller /blog for the handful of posts (and all tag pages) that don’t fit those buckets.', bold_lead='New IA: ')
-bullet('223 articles have a clean, verified, 1-to-1 old → new URL redirect ready to hand to dev. 30 more (blog homepage, all 28 /blog/tag/* pages, 1 glossary post) keep their current URL — no redirect needed.', bold_lead='Redirects: ')
-bullet('The 276 removed URLs carry only ~8.2K sessions/12mo combined, vs. 278.2K for retained content — a ~3% share. Most are either already-dead legacy aliases or thin, low-traffic posts.', bold_lead='Risk: ')
-bullet('All 200 removed URLs that lacked a defined disposition now have one: 113 get a redirect to a genuinely relevant, verified-live page elsewhere on socialpilot.co; 87 are confirmed 410s with no suitable equivalent. See Section 4 and the appendix workbook.', bold_lead='Redirect research done: ')
-bullet('1,794 internal links currently point at pages being removed and need repointing regardless of the redirect/410 call — see Section 6.', bold_lead='Open item: ')
+bullet('253 articles have a clean, verified, 1-to-1 old → new URL redirect ready to hand to dev (223 from the original mapping + 30 newly reclassified). 30 more (blog homepage, all 28 /blog/tag/* pages, 1 glossary post) keep their current URL — no redirect needed.', bold_lead='Redirects: ')
+bullet('The 246 removed URLs carry only ~7.5K sessions/12mo combined, vs. 278.9K for retained content — a ~2.7% share. Most are either already-dead legacy aliases or thin, low-traffic posts.', bold_lead='Risk: ')
+bullet('All 170 removed URLs that lacked a defined disposition now have one: 113 get a redirect to a genuinely relevant, verified-live page elsewhere on socialpilot.co; 57 are confirmed 410s with no suitable equivalent. See Section 4 and the appendix workbook.', bold_lead='Redirect research done: ')
+bullet('Effective today, 30 URLs previously slated for a 410 are being reclassified as retained instead: content that\'s observational/analytical about the market or platform ("what\'s happening") goes to /insights, content that\'s actionable how-to/tactics/planning ("what we should do about it") goes to /strategy. See Section 1a.', bold_lead='Policy update: ')
+bullet('1,727 internal links currently point at pages being removed and need repointing regardless of the redirect/410 call — see Section 6.', bold_lead='Open item: ')
 
 # ============================================================
 # 1. THE NEW STRUCTURE
@@ -140,65 +141,84 @@ body_para('Everything being retained lands in one of four buckets:', size=9.5, s
 make_table(
     ['New Section', 'Path', 'Articles', 'Sessions (12mo)'],
     [
-        ('Insights', '/insights/*', '61', '124,865'),
-        ('Strategy', '/strategy/*', '121', '130,887'),
+        ('Insights', '/insights/*', '71', '125,044'),
+        ('Strategy', '/strategy/*', '141', '131,462'),
         ('Compare', '/compare/*', '5', '1,401'),
         ('Stays in /blog (incl. all 28 tag pages)', '/blog/*', '66', '21,034'),
-        ('Total retained', '—', '253', '278,187'),
+        ('Total retained', '—', '283', '278,941'),
     ],
     [Inches(1.7), Inches(1.4), Inches(1.1), Inches(1.72)],
     bold_last_row=True,
 )
 body_para('Insights = trend/news commentary ("what’s happening"). Strategy = how-to / execution content (including a 13-post Brand & Audience Strategy sub-cluster). Compare = the 5 competitor-pricing pages. /blog retains generic commentary that doesn’t fit the other three, plus every /blog/tag/* archive page — tag pages are being kept, not pruned.', size=8.5, space_before=6)
-body_para('Note: these are the only 4 destinations in this migration — there is no new "/industry" section. Section 4 sends a small number of REMOVED articles (3 of 276) to /industry/* pages that already exist on the site today, unrelated to this restructure, because they happen to be the closest live equivalent for that specific vertical topic.', size=8.5, italic=True, space_before=2)
+body_para('Note: these are the only 4 destinations in this migration — there is no new "/industry" section. Section 4 sends a small number of REMOVED articles (3 of 246) to /industry/* pages that already exist on the site today, unrelated to this restructure, because they happen to be the closest live equivalent for that specific vertical topic.', size=8.5, italic=True, space_before=2)
+
+# ============================================================
+# 1a. INSIGHTS VS STRATEGY RECLASSIFICATION
+# ============================================================
+section_header('1a. POLICY UPDATE — 30 ARTICLES RECLASSIFIED FROM REMOVAL')
+body_para('Effective today: content goes to /insights if it\'s observational/analytical about the market or platform ("what\'s happening" — data, trends, algorithms, stats). Content goes to /strategy if it\'s actionable — how-to guides, tactics, planning ("what we should do about it"). 30 articles previously marked for a 410 were re-reviewed against this rule and are now being retained instead. Full list with rationale for each: BLOG_RECLASSIFIED_TO_INSIGHTS_STRATEGY__v1.xlsx.', size=9.5, space_after=6)
+make_table(
+    ['Destination', 'Count', 'Sessions (12mo)', 'Example'],
+    [
+        ('/insights', '10', '179', 'why-social-media-agencies-stall-at-15-clients (observational — why a pattern happens)'),
+        ('/strategy', '20', '575', 'how-to-become-social-media-manager (actionable — a how-to)'),
+        ('Total reclassified', '30', '754', ''),
+    ],
+    [Inches(1.5), Inches(0.7), Inches(1.15), Inches(3.32)],
+    row_size=8,
+    bold_last_row=True,
+)
+body_para('These 30 keep their existing slug — only the path prefix changes (e.g. /blog/social-media-manager-salary → /insights/social-media-manager-salary), the same pattern as every other redirect in this migration.', size=8.5, space_before=6, italic=True)
 
 # ============================================================
 # 2. WHAT'S MOVING
 # ============================================================
 section_header('2. WHAT’S MOVING (REDIRECTS)')
-bullet('The URL Mapping tab has a full, verified old → new mapping for all 223 articles: no duplicate destinations, no duplicate sources, one hop each.', bold_lead='Ready to implement: ')
-bullet('30 retained URLs need no redirect — the /blog homepage, all 28 /blog/tag/* archive pages, and 1 glossary post stay exactly where they are. Tag pages are being kept as-is, not pruned.', bold_lead='No change needed: ')
-bullet('Hand the URL Mapping tab directly to dev/SEO as the 301 redirect map — Current URL → New URL, one row per rule.', bold_lead='Action: ')
+bullet('The URL Mapping tab has a full, verified old → new mapping for all 223 articles: no duplicate destinations, no duplicate sources, one hop each. Add the 30 newly-reclassified articles (Section 1a) on top of this — same pattern, new destination.', bold_lead='Ready to implement: ')
+bullet('30 retained URLs need no redirect — the /blog homepage, all 28 /blog/tag/* archive pages, and 1 glossary post stay exactly where they are. Tag pages are being kept as-is, not pruned. (Note: this is a different set of 30 from the reclassified articles in Section 1a — the count is coincidental.)', bold_lead='No change needed: ')
+bullet('Hand the URL Mapping tab + the reclassified-articles workbook directly to dev/SEO as the combined 301 redirect map — Current URL → New URL, one row per rule.', bold_lead='Action: ')
 
 # ============================================================
 # 3. WHAT'S BEING REMOVED
 # ============================================================
 section_header('3. WHAT’S BEING REMOVED')
-body_para('276 legacy URLs are being retired — note this excludes all /blog/tag/* pages, which are being kept as-is (see Section 2). Breaking the 276 down by what they actually are today:', size=9.5, space_after=6)
+body_para('246 legacy URLs are being retired — this excludes all /blog/tag/* pages (kept as-is, Section 2) and the 30 articles reclassified into /insights or /strategy (Section 1a). Breaking the 246 down by what they actually are today:', size=9.5, space_after=6)
 make_table(
     ['Group', 'Count', 'What it is', 'Action needed'],
     [
         ('Already-redirected aliases → a retained article', '76', 'Old URL already 301s into a page we’re keeping', 'Re-point redirect to that article’s new URL'),
         ('Already-redirected aliases → another removed page', '25', 'Old URL already 301s into a page also being cut', 'Retire together, no separate traffic impact'),
         ('Dead-end aliases (target not in this audit)', '17', 'Old redirect chain, unclear/off-site target', 'Spot-check, then 410'),
-        ('Live, standalone thin/low-traffic pages', '158', 'Avg. 40 sessions/yr, max 163', 'Resolved — redirect or 410 assigned, see Section 4'),
+        ('Live, standalone thin/low-traffic pages', '128', 'Avg. 40 sessions/yr, max 163', 'Resolved — redirect or 410 assigned, see Section 4'),
     ],
     [Inches(2.0), Inches(0.6), Inches(2.1), Inches(2.22)],
     row_size=8,
 )
-body_para('Combined traffic exposure across all 276 removed URLs: 8,247 sessions/12mo, vs. 278,187 for retained content — a ~3% share. This is a low-risk cut.', size=9.5, space_before=8, bold=True)
+body_para('Combined traffic exposure across all 246 removed URLs: 7,493 sessions/12mo, vs. 278,941 for retained content — a ~2.7% share. This is a low-risk cut.', size=9.5, space_before=8, bold=True)
 
 # ============================================================
 # 4. WHERE REMOVED ARTICLES GO (RESEARCH COMPLETE)
 # ============================================================
 section_header('4. WHERE DO REMOVED ARTICLES GO? (RESEARCH COMPLETE)')
-body_para('The source sheet only specified a 410 for 6 URLs, leaving 200 removed URLs (the 158 live articles above, plus 42 legacy aliases whose old redirect target is also being cut) with no defined disposition — /blog/tag/* pages are excluded from this count since they are being retained, not removed. Each of the 200 was checked against the 223 retained articles’ new URLs AND the live socialpilot.co domain — /features, /industry, /tools, /compare — for a genuinely relevant, real, verified-live destination before deciding.', size=9.5, space_after=6)
+body_para('The source sheet only specified a 410 for 6 URLs, leaving 170 removed URLs (the 128 live articles above, plus 42 legacy aliases whose old redirect target is also being cut) with no defined disposition — /blog/tag/* pages and the 30 reclassified articles (Section 1a) are excluded from this count since they are being retained, not removed. Each of the 170 was checked against the retained articles’ new URLs AND the live socialpilot.co domain — /features, /industry, /tools, /compare — for a genuinely relevant, real, verified-live destination before deciding.', size=9.5, space_after=6)
 make_table(
     ['Outcome', 'Count', 'Sessions (12mo)', 'What it means'],
     [
         ('Redirect — high confidence', '55', '—', 'Clear topical match to a retained page (e.g. how-to-sell-on-pinterest → how-to-make-money-on-pinterest)'),
         ('Redirect — medium/low confidence', '58', '—', 'Reasonable but broader match (e.g. a niche how-to folding into a general topic hub)'),
-        ('410 Gone', '87', '2,624', 'No equivalent content exists anywhere on the domain — safe to retire outright'),
-        ('Total resolved', '200', '4,786 (redirects)', ''),
+        ('410 Gone', '57', '1,870', 'No equivalent content exists anywhere on the domain — safe to retire outright'),
+        ('Total resolved', '170', '4,786 (redirects)', ''),
     ],
     [Inches(2.0), Inches(0.7), Inches(1.15), Inches(2.07)],
     row_size=8,
 )
-body_para('Full URL-by-URL detail — old URL, action, redirect target, confidence, and rationale — is in the companion workbook: BLOG_REDIRECT_PLAN__removed_urls__v2.xlsx (covers all 276 removed URLs, including the 76 already-redirected aliases above)', size=9.5, space_before=8, bold=True)
+body_para('Full URL-by-URL detail — old URL, action, redirect target, confidence, and rationale — is in the companion workbook: BLOG_REDIRECT_PLAN__removed_urls__v3.xlsx (covers all 246 removed URLs, including the 76 already-redirected aliases above)', size=9.5, space_before=8, bold=True)
 flag_box('Still needs sign-off before launch', [
     'The 58 "medium/low confidence" redirects are judgment calls (e.g. a dentists article folding into a general doctors/healthcare page) — SEO/content lead should spot-check these before they go live.',
     '8 of the 113 new redirects point to real, live pages found outside the original mapping tab: 5 go to the /compare or /insights section hub (still within this migration’s structure), and 3 go to pre-existing /industry/* landing pages (photography, NGO, restaurant marketing agency) that have nothing to do with this restructure — confirm all 8 are the intended landing spots, not just an acceptable fallback.',
-    '1,794 internal links across the site currently point at pages being removed. These need to be found and repointed to the new redirect targets (or removed, for pages going to a 410) — a redirect alone does not fix a stale internal link. See Section 6.',
+    'The 30 articles reclassified in Section 1a are judgment calls too (e.g. "10 mistakes to avoid" reads as either analytical or actionable) — worth a quick pass by whoever owns the /insights-vs-/strategy split to confirm the split before launch.',
+    '1,727 internal links across the site currently point at pages being removed. These need to be found and repointed to the new redirect targets (or removed, for pages going to a 410) — a redirect alone does not fix a stale internal link. See Section 6.',
 ])
 
 # ============================================================
@@ -208,29 +228,30 @@ section_header('5. DATA INTEGRITY VERIFICATION')
 body_para('Before finalizing, the three source tabs (Complete Blogs List, URL Mapping, Redirect Plan) were cross-checked programmatically against each other. All checks passed:', size=9.5, space_after=6)
 bullet('Zero duplicate URLs across all three tabs.')
 bullet('Every URL in URL Mapping (223 rows) is marked "To Be Retained" in Complete Blogs List — and vice versa, every "To Be Retained" URL not in URL Mapping is one of the 30 stay-as-is pages (Section 2).')
-bullet('Every URL in Redirect Plan (276 rows) is marked "To be Removed" in Complete Blogs List, with zero overlap against the URL Mapping set.')
+bullet('Every URL in Redirect Plan (then 276 rows) is marked "To be Removed" in Complete Blogs List, with zero overlap against the URL Mapping set.')
 bullet('Every redirect target is a verified real URL — either the New URL for a retained article, or one of the 5 live domain pages found outside the mapping tab (Section 4). Zero blank targets, zero self-redirects, and zero redirect chains (no target that is itself another removed URL).')
 bullet('All 76 "already-aliased" rows independently re-verified against Complete Blogs List’s redirect-chain data and URL Mapping’s new-URL column — exact match on all 76.')
-bullet('223 (URL Mapping) + 276 (Redirect Plan) + 30 (stay-as-is) = 529 — reconciles exactly with the full blog audit.')
+bullet('223 (URL Mapping) + 276 (Redirect Plan) + 30 (stay-as-is) = 529 — reconciled exactly with the full blog audit at that point.')
+bullet('Since then, the 30 reclassified articles (Section 1a) were pulled out of Redirect Plan and independently checked: all 30 confirmed present exactly once in Complete Blogs List, zero duplicates against each other or against the URL Mapping / Redirect Plan sets, and every new URL follows the same slug-preserving pattern as the rest of the migration. 253 (URL Mapping + reclassified) + 246 (Redirect Plan) + 30 (stay-as-is) = 529 — still reconciles.')
 flag_box('One source-data note (not a plan error)', [
-    'Complete Blogs List’s Status column still shows the 22 corrected tag pages as "To be Removed" — it was never updated after the tag-page correction. The Redirect Plan and this document both correctly treat all 28 tag pages as retained; anyone pulling counts directly from that Status column instead of the Redirect Plan should be aware of this override.',
+    'Complete Blogs List’s Status column still shows the 22 corrected tag pages, and now also the 30 reclassified articles, as "To be Removed" — it was never updated after either correction. The Redirect Plan, the reclassified-articles workbook, and this document all correctly override it; anyone pulling counts directly from that Status column should be aware of both overrides.',
 ])
 
 # ============================================================
 # 6. EXECUTION CHECKLIST
 # ============================================================
 section_header('6. EXECUTION CHECKLIST')
-numbered('SEO/content lead spot-checks the 58 medium/low-confidence redirects in the appendix workbook (Section 4).')
-numbered('Implement all 223 verified 301 redirects from the URL Mapping tab (retained articles).')
-numbered('Implement the 189 redirects + 87 410s for removed URLs from the appendix workbook — do NOT touch /blog/tag/* pages, they are being kept.')
-numbered('Audit and repoint the 1,794 internal links currently pointing at removed URLs.')
+numbered('SEO/content lead spot-checks the 58 medium/low-confidence redirects and the 30 reclassified /insights-vs-/strategy calls (Sections 1a and 4).')
+numbered('Implement all 223 verified 301 redirects from the URL Mapping tab, plus the 30 from the reclassified-articles workbook (253 total retained-article redirects).')
+numbered('Implement the 189 redirects + 57 410s for removed URLs from the redirect-plan workbook — do NOT touch /blog/tag/* pages or the 30 reclassified articles, they are being kept.')
+numbered('Audit and repoint the 1,727 internal links currently pointing at removed URLs.')
 numbered('Update the XML sitemap: add new /insights, /strategy, /compare URLs; remove pruned URLs (tag pages stay in the sitemap).')
 numbered('Update main nav, footer, and related-posts modules to reflect the 3 new sections.')
 numbered('Submit the updated sitemap in Google Search Console and spot-check a sample of redirects live.')
 numbered('Monitor 404s, redirect chains, and organic traffic for all migrated/redirected URLs at 7 / 30 / 60 / 90 days post-launch.')
 
 # ============================================================
-# 6. SUGGESTED TIMELINE
+# 7. SUGGESTED TIMELINE
 # ============================================================
 section_header('7. SUGGESTED TIMELINE')
 make_table(
@@ -248,9 +269,9 @@ make_table(
 # 7. SUCCESS METRICS
 # ============================================================
 section_header('8. SUCCESS METRICS')
-bullet('No net loss in organic sessions to migrated content at the 60/90-day mark (baseline: 278,187 sessions/12mo across the 253 retained articles).')
+bullet('No net loss in organic sessions to migrated content at the 60/90-day mark (baseline: 278,941 sessions/12mo across the 283 retained articles).')
 bullet('Zero 404s reachable via internal links post-launch.')
-bullet('All 223 retained-article redirects resolve in a single hop — no chains.')
+bullet('All 253 retained-article redirects resolve in a single hop — no chains.')
 bullet('Search Console shows the new /insights, /strategy, /compare URLs indexed within 30 days.')
 
 # --- SAVE ---
